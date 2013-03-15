@@ -117,23 +117,28 @@ LastFM.prototype = {
       dataType: "jsonp",
       success: function (response) {
         var data = [];
-        response = response[_this[method].response];
-        _this[method].pages = parseInt(response["@attr"].totalPages, 10);
-        $.each(response.track, function (index, track) {
-          data.push({ key: crc32(track.artist.name + track.name), value: track.playcount ? parseInt(track.playcount, 10) : 1 });
-        });
-        _this[method].progress = true;
-        _this[method].dfd.notify(_this);
-        $.post("/lastfm.php", { id: _this.id, method: method, data: data }, function (response) {
-          if (response !== "error") {
-            if (_this[method].page === _this[method].pages) {
-              _this[method].dfd.resolve();
-            } else {
-              _this[method].page++;
-              _this.get(method);
+        if (!response[_this[method].response] || !response[_this[method].response]["@attr"]) {
+          // Last.fm sometimes (especially with huge databases) returns wrong data. Simply ask for the same page again.
+          _this.get(method);
+        } else {
+          response = response[_this[method].response];
+          _this[method].pages = parseInt(response["@attr"].totalPages, 10);
+          $.each(response.track, function (index, track) {
+            data.push({ key: crc32((track.artist.name + track.name).toLowerCase()), value: track.playcount ? parseInt(track.playcount, 10) : 1 });
+          });
+          _this[method].progress = true;
+          _this[method].dfd.notify(_this);
+          $.post("/lastfm.php", { id: _this.id, method: method, data: data }, function (response) {
+            if (response !== "error") {
+              if (_this[method].page === _this[method].pages) {
+                _this[method].dfd.resolve();
+              } else {
+                _this[method].page++;
+                _this.get(method);
+              }
             }
-          }
-        }, "text");
+          }, "text");
+        }
       }
     });
     this[method].dfd.progress(this.progress);
