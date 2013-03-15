@@ -1,0 +1,39 @@
+// -------------------------------------------------- Properties
+
+$puts(group_margin_left,$sub(%el_width%,110))
+
+$puts(group_count,$if($strcmp($substr(%codec%,0,3),'DTS'),'DTS 5.1',%codec%)$if($strcmp(%__encoding%,'lossy'),' @ '$if($strcmp($substr(%__codec_profile%,0,3),VBR),'~')%bitrate%)$ifgreater(%samplerate%,50000,$if(%source%,' '%source%,' Vinyl')' @ '%__bitspersample%' bit / '$div(%samplerate%,1000)' kHz',))
+$puts(count_text_width,$add($gettextwidth($get(group_count)),32))
+$puts(count_text_x,$sub($sub(%el_width%,$get(count_text_width)),15))
+
+// -------------------------------------------------- Background
+
+$drawrect(0,0,%el_width%,120,240-240-240,)
+
+// -------------------------------------------------- Album title
+
+$font('Open Sans Semibold',18,)
+$drawtext(%album%$if(%disc%,' (Disc '%disc%')'),130,24,$get(group_margin_left),,53-53-53)
+
+// -------------------------------------------------- Artist and year
+
+$font(%font%,10,)
+$drawtext(%album artist%[' ('%date%')'],130,56,$get(group_margin_left),,119-119-119)
+
+// -------------------------------------------------- Genre
+
+$font(%font%,8,)
+$drawtext(%genre%,130,96,$get(group_margin_left),,119-119-119)
+
+// -------------------------------------------------- Codec
+
+$font(%font%,8,)
+$drawrect(0,$sub(120,1),%el_width%,1,221-221-221,221-221-221)
+$drawrect(0,0,%el_width%,1,221-221-221,221-221-221)
+$drawrect($get(count_text_x),$div($sub(120,20),2),$get(count_text_width),17,30-30-30,,)
+$drawtext($get(group_count),$add($get(count_text_x),1),-1,$get(count_text_width),120,255-255-255,hcenter vcenter)
+
+// -------------------------------------------------- Album art
+$drawblurrect(10,12,100,100,53-53-53,3)
+$drawimage(10,10,100,100,%el_foobar2000_path%'\fleshgrinder\no-cover.jpg',nokeepaspect)
+$drawimage(10,10,100,100,%path%,artreader nokeepaspect)

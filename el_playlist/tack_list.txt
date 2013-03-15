@@ -1,0 +1,41 @@
+$font(%font%,9,)
+
+// --------------------------------------------------------------------- Playback indicator
+
+$if(%ispaused%,$drawimage(8,8,,,%el_foobar2000_path%'\fleshgrinder\iconic\gray_dark\pause_6x8.png'),$if(%el_isplaying%,$drawimage(8,8,,,%el_foobar2000_path%'\fleshgrinder\iconic\gray_dark\play_6x8.png')))
+
+// --------------------------------------------------------------------- Last.fm loved
+
+$if(%LASTFM_LOVED_DB%,$drawimage(21,9,,,%el_foobar2000_path%'\fleshgrinder\iconic\red\heart_fill_8x7.png'))
+
+// --------------------------------------------------------------------- Track number
+
+$drawtext([%discnumber%.]%tracknumber%,41,0,40,%el_height%,119-119-119,hcenter vcenter)
+
+// --------------------------------------------------------------------- Separator
+
+$drawrect(78,5,1,$sub(%el_height%,10),119-119-119-100,119-119-119-100)
+
+// --------------------------------------------------------------------- Track title
+
+$drawtext(%title%,90,0,$sub(%el_width%,165),%el_height%,0-0-0,vcenter end_ellipsis)
+
+// --------------------------------------------------------------------- Optional fields
+
+$drawtext($if($strcmp(%artist%,%album artist%),,'— '%track artist%)['… composed by '%composer%][' ('%comment%')'],$add($gettextwidth(%title%),94),0,$sub(%el_width%,$gettextwidth(%title%),130),%el_height%,119-119-119,vcenter end_ellipsis)
+
+// --------------------------------------------------------------------- Rating
+
+$if(%rating%,$drawimage($sub(%el_width%,120),8,,,%el_foobar2000_path%'\fleshgrinder\iconic\yellow\star_8x8.png'))
+$if($greater(%rating%,1),$drawimage($sub(%el_width%,130),8,,,%el_foobar2000_path%'\fleshgrinder\iconic\yellow\star_8x8.png'))
+$if($greater(%rating%,2),$drawimage($sub(%el_width%,140),8,,,%el_foobar2000_path%'\fleshgrinder\iconic\yellow\star_8x8.png'))
+$if($greater(%rating%,3),$drawimage($sub(%el_width%,150),8,,,%el_foobar2000_path%'\fleshgrinder\iconic\yellow\star_8x8.png'))
+$if($greater(%rating%,4),$drawimage($sub(%el_width%,160),8,,,%el_foobar2000_path%'\fleshgrinder\iconic\yellow\star_8x8.png'))
+
+// --------------------------------------------------------------------- Last.fm play counter
+
+$if(%LASTFM_PLAYCOUNT_DB%,$drawtext(%LASTFM_PLAYCOUNT_DB%' × ',$sub(%el_width%,$add($gettextwidth(%length%),115)),0,100,%el_height%,119-119-119,right vcenter))
+
+// --------------------------------------------------------------------- Track duration
+
+$drawtext(%length%,$sub(%el_width%,115),0,100,%el_height%,0-0-0,right vcenter)
